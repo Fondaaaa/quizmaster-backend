@@ -34,19 +34,14 @@ public class QuestionOption {
     private String text;
 
     @Setter
-    @Column(name = "is_correct", nullable = false)
-    private boolean correct;
-
-    @Setter
     @Column(nullable = false)
     private int position;
 
-    public QuestionOption(String text, boolean correct, int position) {
+    public QuestionOption(String text, int position) {
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException("Option text cannot be empty");
         }
         this.text = text;
-        this.correct = correct;
         this.position = position;
     }
 
@@ -65,6 +60,6 @@ public class QuestionOption {
 
     @Override
     public String toString() {
-        return "QuestionOption{id=" + id + ", text='" + text + "', correct=" + correct + ", position=" + position + "}";
+        return "QuestionOption{id=" + id + ", text='" + text + ", position=" + position + "}";
     }
 }
