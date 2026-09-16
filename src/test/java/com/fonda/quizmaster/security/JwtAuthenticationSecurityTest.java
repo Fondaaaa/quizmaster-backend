@@ -105,6 +105,16 @@ class JwtAuthenticationSecurityTest {
     }
 
     @Test
+    void authMeEndpoint_whenUnauthenticated_returns401ProblemDetail() throws Exception {
+        mockMvc.perform(get("/api/auth/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.type").value("about:blank"))
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.detail").value("Full authentication is required to access this resource"));
+    }
+
+    @Test
     void protectedEndpoint_whenCookieIsExpired_returns401ProblemDetail() throws Exception {
         // Arrange: expired token
         var key = Keys.hmacShaKeyFor(TEST_SECRET.getBytes(StandardCharsets.UTF_8));
