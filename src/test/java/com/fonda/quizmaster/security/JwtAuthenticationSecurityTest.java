@@ -186,7 +186,7 @@ class JwtAuthenticationSecurityTest {
 
     @RestController
     @RequestMapping("/api/test")
-    static class wriTestSecurityController {
+    static class TestSecurityController {
 
         @GetMapping("/protected")
         public Map<String, Object> getProtected(@AuthenticationPrincipal CustomUserDetails userDetails) {

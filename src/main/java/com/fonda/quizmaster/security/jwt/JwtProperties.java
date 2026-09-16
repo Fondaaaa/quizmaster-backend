@@ -1,4 +1,4 @@
-package com.fonda.quizmaster.security;
+package com.fonda.quizmaster.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

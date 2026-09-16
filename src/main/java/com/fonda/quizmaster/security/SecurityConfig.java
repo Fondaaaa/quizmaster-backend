@@ -1,5 +1,6 @@
 package com.fonda.quizmaster.security;
 
+import com.fonda.quizmaster.security.exception.CustomAccessDeniedHandler;
 import com.fonda.quizmaster.security.exception.CustomAuthenticationEntryPoint;
 import com.fonda.quizmaster.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,6 +42,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
