@@ -2,10 +2,14 @@ package com.fonda.quizmaster.auth;
 
 import com.fonda.quizmaster.auth.dto.LoginRequest;
 import com.fonda.quizmaster.auth.dto.RegisterRequest;
+import com.fonda.quizmaster.common.openapi.ApiBadRequestResponse;
+import com.fonda.quizmaster.common.openapi.ApiConflictResponse;
+import com.fonda.quizmaster.common.openapi.ApiNoContentResponse;
+import com.fonda.quizmaster.common.openapi.ApiNotFoundResponse;
+import com.fonda.quizmaster.common.openapi.ApiUnauthorizedResponse;
 import com.fonda.quizmaster.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +31,9 @@ public class AuthController {
     private final AuthService authService;
 
     @Operation(summary = "Register a new user", description = "Creates a new user account and automatically sets an HTTP-only JWT access cookie.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User successfully registered and authenticated"),
-            @ApiResponse(responseCode = "400", description = "Invalid request payload or validation failure"),
-            @ApiResponse(responseCode = "409", description = "Username or email already exists")
-    })
+    @ApiResponse(responseCode = "201", description = "User successfully registered and authenticated")
+    @ApiBadRequestResponse(description = "Invalid request payload or validation failure")
+    @ApiConflictResponse(description = "Username or email already exists")
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody RegisterRequest request) {
         var result = authService.register(request);
@@ -41,11 +43,9 @@ public class AuthController {
     }
 
     @Operation(summary = "Log in user", description = "Authenticates user credentials and issues an HTTP-only JWT access cookie.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
-            @ApiResponse(responseCode = "400", description = "Missing or malformed credentials"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials or disabled account")
-    })
+    @ApiResponse(responseCode = "200", description = "Successfully authenticated")
+    @ApiBadRequestResponse(description = "Missing or malformed credentials")
+    @ApiUnauthorizedResponse(description = "Invalid credentials or disabled account")
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@Valid @RequestBody LoginRequest request) {
         var result = authService.login(request);
@@ -55,9 +55,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Log out user", description = "Clears the HTTP-only JWT access cookie.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Successfully logged out")
-    })
+    @ApiNoContentResponse(description = "Successfully logged out")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
         var cookie = authService.logout();
@@ -67,11 +65,9 @@ public class AuthController {
     }
 
     @Operation(summary = "Get current user profile", description = "Returns the profile of the currently authenticated user based on JWT cookie.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Current authenticated user profile"),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated or invalid token"),
-            @ApiResponse(responseCode = "404", description = "Authenticated user not found in database")
-    })
+    @ApiResponse(responseCode = "200", description = "Current authenticated user profile")
+    @ApiUnauthorizedResponse(description = "Unauthenticated or invalid token")
+    @ApiNotFoundResponse(description = "Authenticated user not found in database")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getCurrentUser() {
         return ResponseEntity.ok(authService.getCurrentUser());
